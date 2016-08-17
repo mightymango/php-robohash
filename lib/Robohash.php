@@ -39,6 +39,30 @@ class Robohash
         $this->cache    = $options['cache'];
     }
 
+    /** 
+     * my_bcmod - get modulus (substitute for bcmod) 
+     * string my_bcmod ( string left_operand, int modulus ) 
+     * left_operand can be really big, but be carefull with modulus :( 
+     * by Andrius Baranauskas and Laurynas Butkus :) Vilnius, Lithuania 
+     **/ 
+    private function my_bcmod( $x, $y ) 
+    { 
+        // how many numbers to take at once? carefull not to exceed (int) 
+        $take = 5;     
+        $mod = ''; 
+    
+        do 
+        { 
+            $a = (int)$mod.substr( $x, 0, $take ); 
+            $x = substr( $x, $take ); 
+            $mod = $a % $y;    
+        } 
+        while ( strlen($x) ); 
+    
+        return (int)$mod; 
+    } 
+
+
     private function create_hashes($text, $length=11)
     {
         $hashes = str_split(hash('sha512', $text), $length);
@@ -268,27 +292,5 @@ class Robohash
         return self::$bgsets[array_rand(self::$bgsets)];
     }
 
-    /** 
-     * my_bcmod - get modulus (substitute for bcmod) 
-     * string my_bcmod ( string left_operand, int modulus ) 
-     * left_operand can be really big, but be carefull with modulus :( 
-     * by Andrius Baranauskas and Laurynas Butkus :) Vilnius, Lithuania 
-     **/ 
-    function my_bcmod( $x, $y ) 
-    { 
-        // how many numbers to take at once? carefull not to exceed (int) 
-        $take = 5;     
-        $mod = ''; 
-    
-        do 
-        { 
-            $a = (int)$mod.substr( $x, 0, $take ); 
-            $x = substr( $x, $take ); 
-            $mod = $a % $y;    
-        } 
-        while ( strlen($x) ); 
-    
-        return (int)$mod; 
-    } 
 
 }
